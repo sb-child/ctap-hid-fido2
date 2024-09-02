@@ -85,7 +85,7 @@ fn parse_cbor_authdata(
                     ass.extensions
                         .push(Extension::CredBlob((None, Some(cred_blob))));
                 } else {
-                    println!("Anything Extension!");
+                    eprintln!("Anything Extension!");
                 }
             }
         }
@@ -122,7 +122,7 @@ pub fn parse_cbor(
                     ass.extensions
                         .push(Extension::LargeBlobKey((None, Some(lbk))));
                 }
-                _ => println!("- anything error"),
+                _ => eprintln!("- anything error"),
             }
         }
     }

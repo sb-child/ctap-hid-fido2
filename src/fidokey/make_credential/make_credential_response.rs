@@ -110,7 +110,7 @@ fn parse_cbor_authdata(authdata: &[u8], attestation: &mut Attestation) -> Result
                         .extensions
                         .push(Extension::CredBlob((None, Some(v))));
                 } else {
-                    println!("Anything Extension!");
+                    eprintln!("Anything Extension!");
                 }
             }
         }
@@ -134,7 +134,7 @@ pub fn parse_cbor(bytes: &[u8]) -> Result<Attestation> {
                         .extensions
                         .push(Extension::LargeBlobKey((None, Some(lbk))));
                 }
-                _ => println!("- anything error"),
+                _ => eprintln!("- anything error"),
             }
         }
     }

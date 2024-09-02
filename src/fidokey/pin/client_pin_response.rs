@@ -51,7 +51,7 @@ pub fn parse_cbor_client_pin_get_retries(bytes: &[u8]) -> Result<Pin> {
                 match member {
                     3 => pin.retries = util::cbor_value_to_num(val)?,
                     5 => pin.uv_retries = util::cbor_value_to_num(val)?,
-                    _ => println!("- anything error"),
+                    _ => eprintln!("- anything error"),
                 }
             }
         }

@@ -24,7 +24,7 @@ pub(crate) fn parse_cbor(bytes: &[u8]) -> Result<LargeBlobData> {
                     // );
                     // println!("- {:?}", util::to_hex_str(&large_blobs_data.hash));
                 }
-                _ => println!("parse_cbor_member - unknown member {:?}", member),
+                _ => eprintln!("parse_cbor_member - unknown member {:?}", member),
             }
         }
     }

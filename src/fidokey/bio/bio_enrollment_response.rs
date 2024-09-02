@@ -30,7 +30,7 @@ pub(crate) fn parse_cbor(bytes: &[u8]) -> Result<BioEnrollmentData> {
                     }
                 }
                 0x08 => data.max_template_friendly_name = util::cbor_value_to_num(val)?,
-                _ => println!("parse_cbor_member - unknown info {:?}", member),
+                _ => eprintln!("parse_cbor_member - unknown info {:?}", member),
             }
         }
     }

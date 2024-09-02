@@ -21,12 +21,12 @@ pub fn to_str_hex(hexstr: &str) -> Vec<u8> {
 }
 
 pub fn print_typename<T>(_: T) {
-    println!("{}", std::any::type_name::<T>());
+    eprintln!("{}", std::any::type_name::<T>());
 }
 
 #[allow(dead_code)]
 pub(crate) fn debugp(title: &str, bytes: &[u8]) {
-    println!("{}", StrBuf::bufh(title, bytes));
+    eprintln!("{}", StrBuf::bufh(title, bytes));
 }
 
 // for cbor
@@ -159,7 +159,7 @@ pub(crate) fn cbor_value_print(value: &Value) {
         Value::Integer(s) => print_typename(s),
         Value::Map(s) => print_typename(s),
         Value::Array(s) => print_typename(s),
-        _ => println!("unknown Value type"),
+        _ => eprintln!("unknown Value type"),
     };
 }
 
