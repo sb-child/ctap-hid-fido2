@@ -54,7 +54,8 @@ impl FidoKeyHid {
         }
 
         // Get payload as Vec<u8>, not Result<Vec<u8>>
-        let send_payload = get_assertion_command::create_payload(params, extensions, hmac_ext.clone())?;
+        let send_payload =
+            get_assertion_command::create_payload(params, extensions, hmac_ext.clone())?;
 
         // send & response
         let response_cbor = ctaphid::ctaphid_cbor(self, &cid, &send_payload)?;

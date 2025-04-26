@@ -47,8 +47,14 @@ fn print_test_summary() {
         println!();
         print_section("===== Test Summary =====");
         println!("Total Tests:   {}", results.total);
-        println!("Success Tests: {}", results.success.to_string().green().bold());
-        println!("Failed Tests:  {}", results.failure.to_string().red().bold());
+        println!(
+            "Success Tests: {}",
+            results.success.to_string().green().bold()
+        );
+        println!(
+            "Failed Tests:  {}",
+            results.failure.to_string().red().bold()
+        );
     });
 }
 
@@ -125,45 +131,58 @@ fn main() -> Result<()> {
 // Builder Pattern Sample
 //
 fn builder_pattern_sample(device: &FidoKeyHid, rpid: &str, pin: &str) -> Result<()> {
-    non_discoverable_credentials(device, rpid, pin)
-        .unwrap_or_else(|err| {
-            print_error_with_count(&format!("Error => {}\n", err), true);
-        });
+    non_discoverable_credentials(device, rpid, pin).unwrap_or_else(|err| {
+        print_error_with_count(&format!("Error => {}\n", err), true);
+    });
 
     with_uv(device, rpid).unwrap_or_else(|err| {
-            print_error_with_count(&format!("Error => {}\n", err), true);
-        });
+        print_error_with_count(&format!("Error => {}\n", err), true);
+    });
 
-    with_key_types(device, rpid, pin, vec![CredentialSupportedKeyType::Ecdsa256])
-        .unwrap_or_else(|err| {
-            print_error_with_count(&format!("Error => {}\n", err), true);
-        });
+    with_key_types(
+        device,
+        rpid,
+        pin,
+        vec![CredentialSupportedKeyType::Ecdsa256],
+    )
+    .unwrap_or_else(|err| {
+        print_error_with_count(&format!("Error => {}\n", err), true);
+    });
 
-    with_key_types(device, rpid, pin, vec![CredentialSupportedKeyType::Ed25519])
-        .unwrap_or_else(|err| {
+    with_key_types(device, rpid, pin, vec![CredentialSupportedKeyType::Ed25519]).unwrap_or_else(
+        |err| {
             print_error_with_count(&format!("Error => {}\n", err), true);
-        });
+        },
+    );
 
-    with_key_types(device, rpid, pin, vec![CredentialSupportedKeyType::Ed25519, CredentialSupportedKeyType::Ecdsa256])
-        .unwrap_or_else(|err| {
-            print_error_with_count(&format!("Error => {}\n", err), true);
-        });
+    with_key_types(
+        device,
+        rpid,
+        pin,
+        vec![
+            CredentialSupportedKeyType::Ed25519,
+            CredentialSupportedKeyType::Ecdsa256,
+        ],
+    )
+    .unwrap_or_else(|err| {
+        print_error_with_count(&format!("Error => {}\n", err), true);
+    });
 
     with_hmac(device, rpid, pin).unwrap_or_else(|err| {
-            print_error_with_count(&format!("Error => {}\n", err), true);
-        });
+        print_error_with_count(&format!("Error => {}\n", err), true);
+    });
 
     with_large_blob_key(device, rpid, pin).unwrap_or_else(|err| {
-            print_error_with_count(&format!("Error => {}\n", err), true);
-        });
+        print_error_with_count(&format!("Error => {}\n", err), true);
+    });
 
     with_min_pin_length_ex(device, rpid, pin).unwrap_or_else(|err| {
-            print_error_with_count(&format!("Error => {}\n", err), true);
-        });
+        print_error_with_count(&format!("Error => {}\n", err), true);
+    });
 
     without_pin(device, rpid).unwrap_or_else(|err| {
-            print_error_with_count(&format!("Error => {}\n", err), true);
-        });
+        print_error_with_count(&format!("Error => {}\n", err), true);
+    });
 
     Ok(())
 }
@@ -345,9 +364,10 @@ fn with_hmac(device: &FidoKeyHid, rpid: &str, pin: &str) -> Result<()> {
 
     let attestation = device.make_credential_with_args(&make_credential_args)?;
     print_success("-- Register Success");
-    let find = attestation.extensions.iter().find(|it| {
-        matches!(it, Mext::HmacSecret(_))
-    });
+    let find = attestation
+        .extensions
+        .iter()
+        .find(|it| matches!(it, Mext::HmacSecret(_)));
     if let Some(Mext::HmacSecret(is_hmac_secret)) = find {
         print_info(&format!("--- HMAC Secret = {:?}", is_hmac_secret.unwrap()));
     } else {
@@ -377,9 +397,10 @@ fn with_hmac(device: &FidoKeyHid, rpid: &str, pin: &str) -> Result<()> {
 
     let assertions = device.get_assertion_with_args(&get_assertion_args)?;
     print_success("-- Authenticate Success");
-    let find = assertions[0].extensions.iter().find(|it| {
-        matches!(it, Gext::HmacSecret(_))
-    });
+    let find = assertions[0]
+        .extensions
+        .iter()
+        .find(|it| matches!(it, Gext::HmacSecret(_)));
     if let Some(Gext::HmacSecret(hmac_secret)) = find {
         print_info(&format!(
             "--- HMAC Secret = {}",
@@ -475,9 +496,10 @@ fn with_large_blob_key(device: &FidoKeyHid, rpid: &str, pin: &str) -> Result<()>
 
     let attestation = device.make_credential_with_args(&make_credential_args)?;
     print_success("-- Register Success");
-    let find = attestation.extensions.iter().find(|it| {
-        matches!(it, Mext::LargeBlobKey((_, _)))
-    });
+    let find = attestation
+        .extensions
+        .iter()
+        .find(|it| matches!(it, Mext::LargeBlobKey((_, _))));
     if let Some(Mext::LargeBlobKey((_, large_blob_key))) = find {
         print_info(&format!(
             "--- Large Blob Key = {}",
@@ -509,9 +531,10 @@ fn with_large_blob_key(device: &FidoKeyHid, rpid: &str, pin: &str) -> Result<()>
 
     let assertions = device.get_assertion_with_args(&get_assertion_args)?;
     print_success("-- Authenticate Success");
-    let find = assertions[0].extensions.iter().find(|it| {
-        matches!(it, Gext::LargeBlobKey((_, _)))
-    });
+    let find = assertions[0]
+        .extensions
+        .iter()
+        .find(|it| matches!(it, Gext::LargeBlobKey((_, _))));
     if let Some(Gext::LargeBlobKey((_, large_blob_key))) = find {
         print_info(&format!(
             "--- Large Blob Key = {}",
@@ -543,7 +566,10 @@ fn with_large_blob_key(device: &FidoKeyHid, rpid: &str, pin: &str) -> Result<()>
 fn with_min_pin_length_ex(device: &FidoKeyHid, rpid: &str, pin: &str) -> Result<()> {
     print_section("----- with Min Pin Length Extension -----");
     print_info("       - Get Current Min Pin Length");
-    print_info(&format!("       - Need Set Config Min Pin Length RPIDs [{}]", rpid));
+    print_info(&format!(
+        "       - Need Set Config Min Pin Length RPIDs [{}]",
+        rpid
+    ));
 
     print_step("- Register");
     let challenge = verifier::create_challenge();
@@ -556,9 +582,10 @@ fn with_min_pin_length_ex(device: &FidoKeyHid, rpid: &str, pin: &str) -> Result<
 
     let attestation = device.make_credential_with_args(&make_credential_args)?;
     print_success("-- Register Success");
-    let find = attestation.extensions.iter().find(|it| {
-        matches!(it, Mext::MinPinLength((_, _)))
-    });
+    let find = attestation
+        .extensions
+        .iter()
+        .find(|it| matches!(it, Mext::MinPinLength((_, _))));
     if let Some(Mext::MinPinLength((_, min_pin_length))) = find {
         print_info(&format!("--- Min Pin Length = {:?}", min_pin_length));
     } else {
@@ -575,25 +602,26 @@ fn with_min_pin_length_ex(device: &FidoKeyHid, rpid: &str, pin: &str) -> Result<
 // Legacy Pattern Sample
 //
 fn legacy_pattern_sample(device: &FidoKeyHid, rpid: &str, pin: &str) -> Result<()> {
-    legacy_non_discoverable_credentials(device, rpid, pin)
-        .unwrap_or_else(|err| {
-            print_error_with_count(&format!("Error => {}\n", err), true);
-        });
+    legacy_non_discoverable_credentials(device, rpid, pin).unwrap_or_else(|err| {
+        print_error_with_count(&format!("Error => {}\n", err), true);
+    });
 
-    legacy_with_key_type(device, rpid, pin, CredentialSupportedKeyType::Ecdsa256)
-        .unwrap_or_else(|err| {
+    legacy_with_key_type(device, rpid, pin, CredentialSupportedKeyType::Ecdsa256).unwrap_or_else(
+        |err| {
             print_error_with_count(&format!("Error => {}\n", err), true);
-        });
+        },
+    );
 
     // Verify Assertion in Ed25519 is always false because it is not yet implemented
-    legacy_with_key_type(device, rpid, pin, CredentialSupportedKeyType::Ed25519)
-        .unwrap_or_else(|err| {
+    legacy_with_key_type(device, rpid, pin, CredentialSupportedKeyType::Ed25519).unwrap_or_else(
+        |err| {
             print_error_with_count(&format!("Error => {}\n", err), true);
-        });
+        },
+    );
 
     legacy_with_uv(device, rpid).unwrap_or_else(|err| {
-            print_error_with_count(&format!("Error => {}\n", err), true);
-        });
+        print_error_with_count(&format!("Error => {}\n", err), true);
+    });
 
     Ok(())
 }
@@ -648,7 +676,10 @@ fn legacy_with_key_type(
     pin: &str,
     key_type: CredentialSupportedKeyType,
 ) -> Result<()> {
-    print_section(&format!("----- legacy_with_key_type ({:?}) -----", key_type));
+    print_section(&format!(
+        "----- legacy_with_key_type ({:?}) -----",
+        key_type
+    ));
 
     print_step("- Register");
     let challenge = verifier::create_challenge();

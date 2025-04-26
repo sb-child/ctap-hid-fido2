@@ -60,7 +60,10 @@ fn create_payload_get_keyagreement() -> Result<Vec<u8>> {
     to_payload(map)
 }
 
-pub fn create_payload_get_pin_token(key_agreement: &cose::CoseKey, pin_hash_enc: &[u8]) -> Result<Vec<u8>> {
+pub fn create_payload_get_pin_token(
+    key_agreement: &cose::CoseKey,
+    pin_hash_enc: &[u8],
+) -> Result<Vec<u8>> {
     let mut map = Vec::new();
     insert_pin_protocol(&mut map)?;
     insert_sub_command(&mut map, SubCommand::GetPinToken)?;
@@ -128,7 +131,10 @@ pub fn create_payload_get_pin_uv_auth_token_using_uv_with_permissions(
 ) -> Result<Vec<u8>> {
     let mut map = Vec::new();
     insert_pin_protocol(&mut map)?;
-    insert_sub_command(&mut map, SubCommand::GetPinUvAuthTokenUsingUvWithPermissions)?;
+    insert_sub_command(
+        &mut map,
+        SubCommand::GetPinUvAuthTokenUsingUvWithPermissions,
+    )?;
     insert_key_agreement(&mut map, key_agreement)?;
 
     // permission(0x09) - Unsigned Integer
@@ -157,16 +163,13 @@ fn insert_sub_command(map: &mut Vec<(Value, Value)>, cmd: SubCommand) -> Result<
 }
 
 // 0x03 : key_agreement : COSE_Key
-fn insert_key_agreement(map: &mut Vec<(Value, Value)>, key_agreement: &cose::CoseKey) -> Result<()> {
+fn insert_key_agreement(
+    map: &mut Vec<(Value, Value)>,
+    key_agreement: &cose::CoseKey,
+) -> Result<()> {
     let mut ka_val = Vec::new();
-    ka_val.push((
-        1.to_value(),
-        key_agreement.key_type.to_value(),
-    ));
-    ka_val.push((
-        3.to_value(),
-        key_agreement.algorithm.to_value(),
-    ));
+    ka_val.push((1.to_value(), key_agreement.key_type.to_value()));
+    ka_val.push((3.to_value(), key_agreement.algorithm.to_value()));
 
     let param = key_agreement.parameters.get(&-1).unwrap().clone();
     if util_ciborium::is_integer(&param) {
@@ -188,7 +191,7 @@ fn insert_key_agreement(map: &mut Vec<(Value, Value)>, key_agreement: &cose::Cos
             ka_val.push(((-3).to_value(), val.to_value()));
         }
     }
-    
+
     // Create the CBOR map value directly
     let ka = ka_val.to_value();
     map.push((0x03.to_value(), ka));

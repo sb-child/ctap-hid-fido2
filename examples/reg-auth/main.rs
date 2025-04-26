@@ -21,8 +21,7 @@ fn main() -> Result<()> {
     let device = FidoKeyHidFactory::create(&Cfg::init())?;
 
     // get `Attestation` Object
-    let attestation = device
-        .make_credential_with_args(&make_credential_args)?;
+    let attestation = device.make_credential_with_args(&make_credential_args)?;
     println!("- Register Success");
 
     // verify `Attestation` Object
@@ -60,7 +59,7 @@ fn main() -> Result<()> {
         println!("- ! Verify Assertion Failed");
         return Err(anyhow!("Assertion verification failed"));
     }
-    
+
     Ok(())
 }
 
