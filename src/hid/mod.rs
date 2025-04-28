@@ -20,6 +20,8 @@ pub struct HidInfo {
     pub pid: u16,
     /// Vendor ID
     pub vid: u16,
+    /// Serial Number
+    pub serial_number: Option<String>,
     /// A string describing the device provided by the device
     pub product_string: String,
     /// A generic information string build by this crate
@@ -95,7 +97,9 @@ pub fn get_hid_devices(usage_page: Option<u16>) -> Vec<HidInfo> {
             memo.add(" usage=");
             memo.add(&dev.usage().to_string());
 
-            if let Some(n) = dev.serial_number() {
+            let sn = dev.serial_number();
+
+            if let Some(n) = sn {
                 memo.add(" serial_number=");
                 memo.add(n);
             }
@@ -113,6 +117,7 @@ pub fn get_hid_devices(usage_page: Option<u16>) -> Vec<HidInfo> {
             res.push(HidInfo {
                 pid: dev.product_id(),
                 vid: dev.vendor_id(),
+                serial_number: sn.map(String::from),
                 product_string: dev.product_string().unwrap_or_default().to_string(),
                 info: memo.build().to_string(),
                 param,
